@@ -25,11 +25,11 @@ getData_and_Nnums = do
         getNumbers :: (Num a, Read a) => IO [a]
         getNumbers = map read.words <$> getLine
 
+searchMin :: (Num a, Ord a) => a -> [a] -> a
 searchMin m ns = pickNum.genNum.makeList $ ns
     where
         pickNum = head.filter (m<=).map (foldl (\acc x -> acc*10+x) 0)
-        makeList [] = []
-        makeList (x:xs) = [x] : makeList xs
+        makeList = map (\x -> [x])
         fstNl = makeList $ delete 0 ns
         genNum nl = fstNl ++ [ x++n | x <- genNum nl, n <- nl]
 
