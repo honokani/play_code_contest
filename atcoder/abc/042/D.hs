@@ -4,17 +4,29 @@ module C
 
 import Data.List
 
+mul_m x y = mod (x * y) 1000000007
+
 main :: IO ()
 main = do
     [h,w,fh,fw] <- getNumbers
-    print $ culcAllWay h w
+    print $ culcWay h w fh fw
 
 getNumbers :: (Num a, Read a) => IO [a]
 getNumbers = map read.words <$> getLine
 
-fact :: (Num a, Eq a) => a -> a
-fact 1 = 1
-fact n = n * fact (n-1)
+culcC x 1 = 1
+culcC 1 y = 1
+culcC x y = case y<=x of
+    True  -> div (foldr (*) 1 [(x)..(x+y-2)]) (foldr (*) 1 [1..(y-1)])
+    False -> culcC y x
 
-culcAllWay h w = (fact (h+w-2)) / (fact (h-1) * fact (w-1))
+culcWay h w fh fw = foldr ((+).snd) 0 $ take (aw) culcAll
+    where
+        ah = h - fh
+        aw = w - fw
+        culcAll = iterate ( \(i,x) -> ( i+1
+                                      , div (x*(ah+aw+i)*(aw-i)) ((aw+i+1)*(fh+aw-1-i))
+                                      )
+                          ) (1,culcInitial)
+        culcInitial = (culcC ah (fw+1)) * (culcC fh aw)
 
