@@ -1,4 +1,4 @@
-module C
+module D
     ( main
     ) where
 
