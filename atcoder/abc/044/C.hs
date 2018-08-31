@@ -53,15 +53,14 @@ selectCardArr avg ls
             where
                 initializeMemo mArr = AI.writeArray mArr (0,0) 1
                 updateMemo mArr (i,elem) = do
-                    forM_ [negaMax .. posiMax] (\x -> do
-                            old <- AI.readArray mArr (i-1,x)
-                            b <- return $ (x-elem) < negaMax || posiMax < (x-elem)
-                            if not b then do
-                                up <- AI.readArray mArr (i-1,x-elem)
-                                AI.writeArray mArr (i,x) $ old + up
-                            else do
-                                AI.writeArray mArr (i,x) old
-                        )
+                    forM_ [negaMax .. posiMax] \x -> do
+                        old <- AI.readArray mArr (i-1,x)
+                        b <- return $ (x-elem) < negaMax || posiMax < (x-elem)
+                        if not b then do
+                            up <- AI.readArray mArr (i-1,x-elem)
+                            AI.writeArray mArr (i,x) $ old + up
+                        else do
+                            AI.writeArray mArr (i,x) old
 
 
 

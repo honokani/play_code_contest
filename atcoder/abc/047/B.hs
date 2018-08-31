@@ -1,7 +1,6 @@
 module B
     ( main
     ) where
--- Fri Aug 17 16:38:49 JST 2018
 
 import Data.List
 import Control.Monad
@@ -11,28 +10,22 @@ main = do
     (i,ns) <- getIIL_and_InfosWithNums
     print $ culcArea i ns
 
-culcArea (ix,iy) ns = culcArea $ foldl shrinkArea (0,0,ix,iy) $ fixNs ns
+culcArea (ix,iy) ns = culcAreaC $ foldl shrinkArea (0,ix,0,iy) $ fixNs ns
     where
-        fixNs [] = ([],[])
-        fixNs (y:ys) = (ps:pss,dir:dirs)
+        fixNs []     = []
+        fixNs (y:ys) = (splitBotAndMapT3 id.listToT3.take 3 $ y) : fixNs ys
+        shrinkArea (sx,ex,sy,ey) ((_nx,_ny),dir)
+            | dir == 1 = (_nx,ex,sy,ey)
+            | dir == 2 = (sx,_nx,sy,ey)
+            | dir == 3 = (sx,ex,_ny,ey)
+            | dir == 4 = (sx,ex,sy,_ny)
+        culcAreaC (sx,ex,sy,ey) = if (0 < x && 0 < y) then x*y else 0
             where
-                (ps,dir) = splitBotAndMapT3 id.listToT3.take 3 $ y
-                (pss,dirs) = fixNs ys
-        shrinkArea (sx,sy,ex,ey) [((nx,ny),dir)]
-            | dir == 1 = (nx,sy,ex,ey)
-            | dir == 2 = (sx,sy,nx,ey)
-            | dir == 3 = (sx,ny,ex,ey)
-            | dir == 4 = (sx,sy,ex,ny)
-        culcArea (sx,sy,ex,ey) = (ex-sx) * (ey-sy)
+                x = (ex-sx)
+                y = (ey-sy)
 
 
-            
-
-
-
-
-
-getIIL_and_InfosWithNums :: (Num a, Read a, Enum a) => IO (((Int,Int),[[a]]))
+getIIL_and_InfosWithNums :: IO ((Int,Int),[[Int]])
 getIIL_and_InfosWithNums = do
     (i,l) <- splitBotAndMapT3 read.listToT3.take 3.words <$> getLine
     ns <- replicateM l getNumbers
