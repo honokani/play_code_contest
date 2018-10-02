@@ -20,7 +20,7 @@ getEarnTimings cs = bot $ foldr findCity init cs
         findCity x (max,earn,n) = if
             | max < x   -> (x,earn,n)
             | otherwise -> if
-                | max - x == earn -> (max,earn,n+1)
-                | max - x <  earn -> (max,earn,n)
-                | otherwise       -> (max,max-x,1)
+                | max - x == earn -> (max, earn  ,n+1)
+                | max - x <  earn -> (max, earn  ,n)
+                | otherwise       -> (max, max-x ,1)
 
