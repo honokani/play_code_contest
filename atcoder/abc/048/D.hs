@@ -5,20 +5,26 @@ module C where
 main :: IO ()
 main = do
     s <- getLine
-    print =<< runGame s True
+    print =<< runGame s
+
 
 data Winner = First
             | Second
             deriving Show
 
-runGame :: String -> Bool -> IO Winner
-runGame s b = if
-    | isGameOver s -> return $ checkWiner b
-    | otherwise -> do
-        nextS <- pickChar s
-        runGame (head nextS) (not b)
+opposit :: Winner -> Winner
+opposit First = Second
+opposit Second = First
+
+runGame :: String -> IO Winner
+runGame = runGameCore Second
     where
-        checkWiner b = if b then Second else First
+        runGameCore :: Winner -> String -> IO Winner
+        runGameCore u s = if
+            | isGameOver s -> return u
+            | otherwise -> do
+                nextS <- pickChar s
+                runGameCore (opposit u) (head nextS)
 
 pickChar :: String -> IO [String]
 pickChar s = return $ concat.map charangePick $ [1..(sLen - 2)]
