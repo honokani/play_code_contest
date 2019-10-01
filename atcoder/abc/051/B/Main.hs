@@ -2,9 +2,6 @@
 
 module Main where
 
-import Data.Array
-import Data.Array.IO
-
 import Data.Maybe (fromJust)
 import qualified Data.ByteString.Char8 as BS
 bytestr2Int = fst . fromJust . BS.readInt
@@ -27,12 +24,10 @@ main = do
 check k s a c =
     if s<0 then
         0
-    else if k<a || a<0 then do
+    else if k<a || a<0 then
         0
     else case c of
-        Zero -> do
-            check k s (a+1) c + check k (s-a) 0 (One a)
-        (One x) -> do
-            check k s (a+1) c + check k 0 (s-a) (Filled x a (s-a))
-        _ -> do
-            1
+        Zero    -> check k s (a+1) c + check k (s-a) 0 (One a)
+        (One x) -> check k s (a+1) c + check k 0 (s-a) (Filled x a (s-a))
+        _       -> 1
+
